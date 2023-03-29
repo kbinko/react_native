@@ -34,6 +34,7 @@ const Welcome = () => {
             value=""
             onChange={() => {}}
             placeholder="Search for jobs"
+            multiline
           />
         </View>
 
