@@ -1,20 +1,24 @@
 import { Text, View, SafeAreaView, ScrollView, ActivityIndicator, RefreshControl } from "react-native";
+import { useState, useCallback } from "react";
 import { Stack, useRouter, useSearchParams } from "expo-router";
-import { useCallback, useState } from "react";
 
-import { Company, JobAbout, JobFooter, JobTabs, ScreenHeaderBtn, Scpecifics } from "../../components";
+import { Company, JobAbout, JobFooter, JobTabs, ScreenHeaderBtn, Specifics } from "../../components";
+
 import { COLORS, icons, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
+import { isLoading } from "expo-font";
+
+const tabs = ["About", "Qualifications", "Responsibilities"];
 
 const JobDetails = () => {
 	const params = useSearchParams();
 	const router = useRouter();
 
-	const { data, isLoading, error, refetch } = useFetch(`job-details`, {
-		job_id: params.id,
-	});
+	const { data, isLoading, error, refetch } = useFetch("job-details", { job_id: params.id });
 
 	const [refreshing, setRefreshing] = useState(false);
+	
+
 
 	const onRefresh = () => {};
 
@@ -26,15 +30,16 @@ const JobDetails = () => {
 					headerShadowVisible: false,
 					headerBackVisible: false,
 					headerLeft: () => (
-						<ScreenHeaderBtn iconUrl={icons.left} dimension="60%" onPress={() => router.back()} />
+						<ScreenHeaderBtn iconUrl={icons.left} dimension="60%" handlePress={() => router.back()} />
 					),
 					headerRight: () => <ScreenHeaderBtn iconUrl={icons.share} dimension="60%" />,
-					headerTitle: "",
+					headerTitle: " ",
 				}}
 			/>
+
 			<>
 				<ScrollView
-					showsVerticalScrollIndicator={false}
+					showsHorizontalScrollIndicator={false}
 					refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 					{isLoading ? (
 						<ActivityIndicator size="large" color={COLORS.primary} />
@@ -44,13 +49,16 @@ const JobDetails = () => {
 						<Text>No data found</Text>
 					) : (
 						<View style={{ padding: SIZES.medium, paddingBottom: 100 }}>
-							<Company
-								companyLogo={data[0].employer_logo}
-								jobTitle={data[0].job_title}
-								companyName={data[0].employer_name}
-								location={data[0].job_country}
-							/>
-							<JobTabs />
+										<Company
+											companyLogo={data[0].employer_logo}
+											jobTitle={data[0].job_title}
+											companyName={data[0].employer_name}
+											Location={data[0].job_country}
+										/>
+
+										<JobAbout
+											
+										/>
 						</View>
 					)}
 				</ScrollView>
@@ -58,5 +66,4 @@ const JobDetails = () => {
 		</SafeAreaView>
 	);
 };
-
 export default JobDetails;
